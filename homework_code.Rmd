@@ -1,0 +1,44 @@
+---
+title: "week4_homework"
+output: html_document
+date: "2022-11-02"
+---
+```{r plot the shapefile}
+install.packages("countrycode")
+library(rgdal)
+library(sf)
+shape <- st_read("/Users/siahu/Downloads/urban spatial science/casa0005 geographic information systems/homework/week4/World_Countries_(Generalized)/World_Countries__Generalized_.shp")%>%
+  clean_names()
+```
+```{r join the csv data}
+library(tidyverse)
+mycsv <-  read_csv("/Users/siahu/Downloads/urban spatial science/casa0005 geographic information systems/homework/week4/HDR21-22_Composite_indices_complete_time_series.csv") %>%
+  clean_names()
+
+difference <- mycsv %>%
+  mutate(gii_difference = gii_2019-gii_2010)
+```
+
+```{r}
+install.packages("janitor")
+library(janitor)
+```
+
+
+```{r join the data to shapefile}
+shape_001 <- shape %>%
+  merge(.,
+        difference,
+        by.x="country", 
+        by.y="country")
+```
+
+```{r}
+library(tmap)
+library(tmaptools)
+tmap_mode("plot")
+shape_001 %>%
+  qtm(.,fill = "gii_difference")
+```
+
+
